@@ -1,0 +1,29 @@
+- hosts: allservers
+  pre_tasks: 
+    - debug: 
+        msg : "Started deployment. Current time is {{ansible_date_time.date}} {{ansible_date_time.time}}"
+  roles:
+  - devops_user
+  - { role: devops_user, 
+      usr: devops, 
+      uid: 1555, 
+      primary_group: devops, 
+      secondary_groups: "vagrant, games", 
+      createhome: yes,
+      gid: 1555 }
+
+- hosts: appservers
+  roles:
+  - role: java
+    when:
+      ansible_local.java is not defined or ansible_local.java.version != java_release
+    vars:
+    - java_release: 10.0.2 
+  - role: tomcat
+    when:
+      ansible_local.tomcat is not defined or ansible_local.tomcat.version != tomcat_version
+    vars:
+    - tomcat_version: 8.5.47
+  post_tasks: 
+    - debug: 
+        msg : "Completed deployment. Current time is {{ansible_date_time.date}} {{ansible_date_time.time}}"

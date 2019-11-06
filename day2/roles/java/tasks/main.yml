@@ -1,0 +1,16 @@
+- name: install java
+  yum: name="java-{{ java_version }}-openjdk" state=present
+  become: yes
+  notify: java_facts
+
+- name: get java version
+  shell: java -version 2>&1 | grep version | cut -d" " -f3 | sed 's/"//g'
+  register: java_version
+  become: yes
+
+- name: get java build
+  shell: java -version 2>&1 | grep "Server VM .build"
+  register: java_build
+  become: yes
+  
+

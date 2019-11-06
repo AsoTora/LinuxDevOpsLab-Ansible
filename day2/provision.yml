@@ -1,0 +1,24 @@
+- hosts: allservers
+  pre_tasks: 
+    - debug: 
+        msg : "Started deployment. 
+        Current time is {{ansible_date_time.date}} {{ansible_date_time.time}}"
+  roles:
+  - common 
+  - devops_user
+
+- hosts: webservers
+  roles:
+  - httpd
+  post_tasks: 
+    - debug: 
+        msg : "Completed deployment. 
+        Current time is {{ansible_date_time.date}} {{ansible_date_time.time}}"
+
+- hosts: appservers
+  roles:
+  - { role: tomcat, tomcat_version: 8.5.47 }
+  post_tasks: 
+    - debug: 
+        msg : "Completed deployment. 
+        Current time is {{ansible_date_time.date}} {{ansible_date_time.time}}"

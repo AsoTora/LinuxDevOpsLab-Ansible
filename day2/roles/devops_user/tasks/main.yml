@@ -1,0 +1,29 @@
+- name: create user groups
+  group: name="{{ usr }}" state=present
+  become: yes
+
+- name: create user accounts
+  user: "name={{ usr }} groups={{ usr }}"
+  become: yes
+
+- name: add authorized keys
+  authorized_key:
+    user: "{{ usr }}"
+    key: "{{ lookup('file', '/home/student/.ssh/devops.pem.pub') }}"
+    state: "present"
+  become: yes
+
+- name: allow admin user to sudo without a password
+  lineinfile:
+    dest: "/etc/sudoers"
+    state: "present"
+    line: "{{ usr }} ALL=(ALL) NOPASSWD: ALL"
+  become: yes
+
+- name: get user info
+  shell: "cat /etc/passwd 2>&1 | grep {{ usr }}"
+  register: user_info
+  become: yes
+  notify: user_facts
+  
+

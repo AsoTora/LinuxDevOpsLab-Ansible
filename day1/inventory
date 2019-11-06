@@ -1,0 +1,8 @@
+[localhost]
+127.0.0.1 ansible_connection=local
+
+[webservers]
+192.168.56.66
+
+[appservers]
+192.168.56.67 

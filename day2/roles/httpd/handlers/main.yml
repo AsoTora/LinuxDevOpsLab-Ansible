@@ -1,0 +1,14 @@
+- name: "restart and enable httpd"
+  service: name=httpd state=restarted enabled=yes
+  become: true
+
+- name: "httpd_facts"
+  copy: 
+    content: >
+      {
+        "httpd version": "{{ httpd_version.stdout }}",
+        "httpd build": "{{ httpd_build.stdout }}",
+        "install date": "{{ ansible_date_time.date }}"
+      }
+    dest: /etc/ansible/facts.d/httpd.fact
+  become: yes

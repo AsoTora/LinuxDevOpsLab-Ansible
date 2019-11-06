@@ -1,0 +1,8 @@
+- name: "basic_facts"
+  copy: 
+    content: >
+      {
+        "Last yum update (except kernel)": "{{ ansible_date_time.date }}"
+      }
+    dest: /etc/ansible/facts.d/update.fact
+  become: yes

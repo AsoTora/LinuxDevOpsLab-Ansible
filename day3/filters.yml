@@ -1,0 +1,11 @@
+- hosts: localhost
+  vars:
+    accounts:
+    - { name: Identity, id: 818440412345 }
+    - { name: Devops, id: 794873312345 }
+    - { name: WCA, id: 544564512345 }
+    - { name: API, id: 394936412345 }
+  
+  tasks:
+  - name: parse with my filter
+    debug: msg={{ accounts | a_filter }}

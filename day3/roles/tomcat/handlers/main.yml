@@ -1,0 +1,20 @@
+- name: "daemon reload"
+  systemd:
+    daemon_reload: yes
+  become: yes
+
+- name: "restart and enable tomcat"
+  service: name=tomcat state=restarted enabled=yes
+  become: true
+
+- name: "tomcat_last_facts"
+  copy: 
+    content: >
+      {
+        "version": "{{ tomcat_vers.stdout }}",
+        "directory": "{{ tomcat_dir.stdout }}",
+        "build": "{{ tomcat_build.stdout }}",
+        "install_date": "{{ ansible_date_time.date }}"
+      }
+    dest: /etc/ansible/facts.d/tomcat.fact
+  become: yes

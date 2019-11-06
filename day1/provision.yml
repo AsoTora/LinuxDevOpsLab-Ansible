@@ -1,0 +1,29 @@
+- name: "Httpd install"
+  hosts: webservers
+  become: yes
+  become_user: root
+
+  tasks:
+  - name: "Install httpd"
+    yum: pkg=httpd state=latest
+  - name: "Copy httpd configuration"
+    copy: src=httpd.conf dest=/etc/httpd/conf.d/httpd.conf
+    notify: Restart httpd
+  handlers:
+  - name: "Restart httpd"
+    service: name=httpd state=restarted
+
+- name: "Tomcat install"
+  hosts: appservers
+  become: yes
+  become_user: root
+
+  tasks:
+  - name: "Install tomcat"
+    yum: pkg=tomcat state=latest
+  - name: "Install tomcat-webapps"
+    yum: pkg=tomcat-webapps state=latest
+  - name: "Ensure tomcat is running"
+    service: name=tomcat state=started
+
+       

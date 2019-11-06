@@ -1,0 +1,15 @@
+- hosts: localhost
+  vars:
+    key1: /home/student/.ssh/devops1.pem
+  tasks:
+  - name: "Check key exhistance"
+    stat:
+      path: "{{ key1 }}"
+    register: file_existance
+  - name: "Generate key"
+    command : ssh-keygen -q -t rsa -f "{{ key1 }}" -C "" -N ""
+    args:
+      creates: "{{ key1 }}"
+    when: file_existance.stat.exists==false
+#  - name: "Copy key to my folder"
+#    copy: "src={{ key1 }} dest=/home/student/ansible/day3/devops1.pem"

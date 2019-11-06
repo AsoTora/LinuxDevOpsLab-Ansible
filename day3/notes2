@@ -1,0 +1,6 @@
+export ANSIBLE_FILTER_PLUGIN=./filter_plugins
+export ANSIBLE_LIBRARY=./library
+
+ansible-playbook new.yml
+
+ansible localhost -m service-cheks.py -a "msg=xrdp_process_report process=xrdp port=3389 url=http://localhost/users/ regex=http://localhost/user/.*/test/.*"

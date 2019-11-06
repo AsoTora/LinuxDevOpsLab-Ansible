@@ -1,0 +1,67 @@
+- name: add group "tomcat"
+  group: name=tomcat
+  become: true
+
+- name: add user "tomcat"
+  user: name=tomcat group=tomcat home=/usr/share/tomcat createhome=no
+  become: true
+
+- name: download tomcat
+  get_url: "url={{ link }} dest=/opt/apache-tomcat-{{ tomcat_version }}.tar.gz"
+  become: true
+
+- name: extract archive
+  command: "chdir=/usr/share /bin/tar xvf /opt/apache-tomcat-{{ tomcat_version }}.tar.gz 
+  -C /opt/ creates=/opt/apache-tomcat-{{ tomcat_version }}"
+  args:
+    warn: false
+  become: true
+
+- name: create symlink install directory
+  file: "src=/opt/apache-tomcat-{{ tomcat_version }} path=/usr/share/tomcat state=link"
+  become: true
+
+- name: change ownership of tomcat installation
+  file: path=/usr/share/tomcat owner=tomcat group=tomcat state=directory recurse=yes
+  become: true
+
+- name: configure tomcat server
+  copy: src=tomcat.service dest=/etc/systemd/system/
+  become: true
+  notify: 
+    - daemon reload
+    - restart and enable tomcat
+    - tomcat_facts
+
+- name: ensure tomcat running
+  service: name=tomcat state=started
+  become: yes
+
+- name: check tomcat is running
+  shell: ps -ef | grep tomcat
+  args:
+    warn: false
+
+- name: check tomcat respond is "200"
+  shell: "curl -sL -w %{http_code} localhost:8080 -o /dev/null | grep 200"
+  args:
+    warn: false
+
+- name: check tomcat title
+  shell: "curl -s localhost:8080 | grep '<title>Apache Tomcat' >/dev/null"
+  args:
+    warn: false
+ 
+- name: get tomcat build
+  shell: "java -cp /opt/apache-tomcat-{{ tomcat_version }}/lib/catalina.jar 
+  org.apache.catalina.util.ServerInfo | sed -n -e 's/^.*built: //p'" 
+  register: tomcat_build
+
+- name: get tomcat vers
+  shell: "java -cp /opt/apache-tomcat-{{ tomcat_version }}/lib/catalina.jar 
+  org.apache.catalina.util.ServerInfo | sed -n -e 's/^.*version: //p'" 
+  register: tomcat_vers
+
+- name: get tomcat location 
+  shell: "whereis tomcat | sed -n -e 's/^.*tomcat: //p'" 
+  register: tomcat_dir

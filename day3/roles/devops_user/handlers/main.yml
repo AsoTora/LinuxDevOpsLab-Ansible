@@ -1,0 +1,11 @@
+- name: "user_facts"
+  copy: 
+    content: >
+      {
+        "user name": "{{ usr }}",
+        "user info": "{{ user_info.stdout }}",
+        "creation date": "{{ ansible_date_time.date }}"
+      }
+    dest: /etc/ansible/facts.d/user.fact
+  become: yes
+

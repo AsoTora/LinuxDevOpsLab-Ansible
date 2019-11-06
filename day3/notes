@@ -1,0 +1,23 @@
+ansible-playbook devops-bootstrap.yml -i inventory
+ansible-playbook new.yml -i inventory -u root -k
+
+[defaults]
+roles_path=/home/student/ansible/day2/roles
+
+[dbservers]
+server1 naming=a
+server2 naming=b
+server3 naming=c
+[dbservers:vars]
+ansible_host=127.0.0.1
+ansible_connection=local
+
+- hosts: dbservers
+- hosts: localhost
+  tasks:
+    - debug: msg='{{ hostvars[groups['dbservers'][0]]['naming'] }}'
+    - debug: msg='{{ hostvars[groups['dbservers'][1]]['naming'] }}'
+    - debug: msg='{{ hostvars[groups['dbservers'][2]]['naming'] }}'
+
+
+ansible server2 -i inventory  -m setup -a filter=ansible_local -k

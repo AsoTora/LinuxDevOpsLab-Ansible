@@ -1,0 +1,7 @@
+- hosts: localhost
+  vars:
+    student: pavel_hardzeyeu
+  tasks:
+  - debug: msg="{{ student|regex_replace('_.*', '') }}"
+  - debug: msg="{{ student|regex_replace('.*_', '') }}"
+  

@@ -1,0 +1,8 @@
+  # Play Name
+- name: Hello World Play
+  # Where this playbook run
+  hosts: localhost
+  # Tasks to be called
+  tasks:
+  - debug: msg="Hello world!"
+  - shell: echo "Hello world!"
