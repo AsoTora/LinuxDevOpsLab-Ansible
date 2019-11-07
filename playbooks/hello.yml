@@ -4,5 +4,4 @@
   hosts: localhost
   # Tasks to be called
   tasks:
-  - debug: msg="Hello world!"
-  - shell: echo "Hello world!"
+  - debug: msg="{{ msg }}"

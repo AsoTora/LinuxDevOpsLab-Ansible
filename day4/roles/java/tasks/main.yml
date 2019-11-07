@@ -1,0 +1,52 @@
+---
+- name: copy java archive
+  copy:
+    src: "jdk-{{ java_release }}-linux-x64.tar.gz"
+    dest: "/opt/oracle/java/"
+  become: yes
+  register: out
+  ignore_errors: yes
+
+- name: custom error
+  fail:
+    msg: "Source java version distribution jdk-{{ java_release }} hasn’t been found"
+  failed_when: out.failed
+
+- name: java install
+  unarchive:
+    src: "/opt/oracle/java/jdk-{{ java_release }}-linux-x64.tar.gz"
+    dest: "/opt/oracle/java/"
+    remote_src: yes
+  become: yes
+
+- name: create symlink install directory
+  file: "src=/opt/oracle/java/jdk-{{ java_release }} path=/usr/share/java state=link"
+  become: true
+
+- name: set java_home
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    regexp: '^JAVA_HOME'
+    line: 'JAVA_HOME=/opt/oracle/java/jdk-{{ java_release }}'
+
+- name: java alternatives
+  command: "alternatives --install /usr/bin/{{ item }} {{ item }} /opt/oracle/java/jdk-{{ java_release }}/bin/{{ item }} 1"
+  with_items:
+  - java
+  - javac
+  - jar
+  become: yes
+
+- name: get java version
+  shell: java -version 2>&1 | grep version | cut -d" " -f3 | sed 's/"//g'
+  register: java_version
+  become: yes
+  notify: javka_facts
+
+- name: check if facts.d exhists
+  file:
+    path: /etc/ansible/facts.d
+    recurse: yes
+    state: directory
+  become: yes

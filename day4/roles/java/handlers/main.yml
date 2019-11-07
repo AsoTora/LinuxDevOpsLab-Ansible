@@ -1,0 +1,9 @@
+- name: "javka_facts"
+  copy: 
+    content: >
+      {
+        "version": "{{ java_version.stdout }}",
+        "installed": "{{ ansible_date_time.date }}"
+      }
+    dest: /etc/ansible/facts.d/java.fact
+  become: yes

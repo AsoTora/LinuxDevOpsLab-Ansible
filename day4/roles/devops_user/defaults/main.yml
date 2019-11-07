@@ -1,0 +1,17 @@
+---
+# user settings
+usr: devops
+uid: 1550
+secondary_groups: 
+  - games
+  - vagrant 
+createhome: yes
+my_keys: 
+  - files/devops.pem.pub
+  - files/devops1.pem.pub
+home_path: "/home/{{ usr }}"
+nopasswd: "ALL=(ALL) NOPASSWD: ALL"
+
+# group settings
+primary_group: devops
+gid: 1550

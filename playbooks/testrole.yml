@@ -1,0 +1,21 @@
+- name: main
+  hosts: localhost
+  tasks:
+    - name: Role with vars + Loop (1)
+      include_role:
+        name: hello
+      loop:
+      - "custom value 1"
+      - "custom value 2"
+      loop_control:
+        loop_var: msg
+
+
+    - name: Role with vars + Loop (2)
+      include_role:
+        name: hello
+      vars:
+        role_variable: "{{ item }}"
+      loop:
+        - 'one'
+        - 'two'

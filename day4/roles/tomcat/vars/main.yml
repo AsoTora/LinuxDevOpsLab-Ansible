@@ -1,0 +1,1 @@
+link: "http://ftp.byfly.by/pub/apache.org/tomcat/tomcat-{{ tomcat_version.split('.')[0] }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"

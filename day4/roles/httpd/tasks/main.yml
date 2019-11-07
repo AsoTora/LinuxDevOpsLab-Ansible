@@ -1,0 +1,18 @@
+- name: install httpd
+  yum: name=httpd state=latest
+  become: yes
+
+- name: copy httpd configuration
+  copy: src=httpd.conf dest=/etc/httpd/conf.d/httpd.conf
+  become: yes
+  notify: 
+    - restart and enable httpd
+    - httpd_facts
+
+- name: get httpd version
+  shell: httpd -v 2>&1 | grep version | cut -d" " -f3
+  register: httpd_version
+
+- name: get httpd build
+  shell: "httpd -v 2>&1 | sed -n -e 's/^.*built: //p'"
+  register: httpd_build
